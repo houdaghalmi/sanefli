@@ -57,4 +57,13 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+    public function index()
+    {
+        $user = auth()->user();
+        if ($user->role === 'admin') {
+            return view('admin.dashboard');
+        } else {
+            return view('user.dashboard');
+        }
+    }
 }

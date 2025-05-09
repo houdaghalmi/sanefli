@@ -27,5 +27,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [ProfileController::class, 'index']);
+    // other admin routes
+});
+
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/user/dashboard', [ProfileController::class, 'index']);
+    // other user routes
+});
 
 require __DIR__.'/auth.php';
