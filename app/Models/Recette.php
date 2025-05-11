@@ -9,7 +9,7 @@ class Recette extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'id_category'];
+    protected $fillable = ['name', 'id_category','image'];
 
     public function category()
     {
