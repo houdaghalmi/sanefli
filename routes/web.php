@@ -6,6 +6,14 @@ use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminIngredientController;
 use App\Http\Controllers\AdminPreparationController;
 
+
+
+
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RecetteController;
+use App\Http\Controllers\FavoriteController;
+
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,7 +57,33 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [ProfileController::class, 'index']);
-    // other user routes
+    
+    Route::get('/recette/search', [RecetteController::class, 'search'])->name('recette.search');
+    Route::get('/recette/{id}', [RecetteController::class, 'detail'])->name('recette.detail');
+    Route::post('/recette/{id}/toggle-favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/user/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    
+    /*
+    Route::get('/user/dashboard', function () {
+        return view('user.dashboard');
+    })->name('user.dashboard');
+
+    // Page de recherche de recettes
+    Route::get('/recette/search', function () {
+        return view('user.recette');
+    })->name('recette.search');
+
+    // Page détail d'une recette
+    Route::get('/recette/detail', function () {
+        return view('user.recetteDetaille');
+    })->name('recette.detail');
+
+    // Liste des favoris
+    Route::get('/user/favorites', function () {
+        return view('user.favorites');
+    })->name('favorites.index');
+
+    */
 });
 
 require __DIR__.'/auth.php';

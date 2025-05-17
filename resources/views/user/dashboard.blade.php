@@ -1,19 +1,27 @@
+@extends('layouts.app')
 
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@section('content')
+<div class="container mt-4">
+    <h2 class="mb-4">ahla bik, {{ Auth::user()->name }} </h2>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                     <h1>User Dashboard</h1>
+    <div class="mb-4">
+        <a href="{{ route('recette.search') }}" class="btn btn-primary">🔍 Rechercher des recettes</a>
+    </div>
+
+    <h4>Recettes recommandées</h4>
+    <div class="row">
+        @foreach($suggestedRecipes as $recipe)
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ asset('storage/' . $recipe->image) }}" class="card-img-top" alt="{{ $recipe->title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $recipe->title }}</h5>
+                        <p class="card-text">{{ $recipe->preparation_time }} min</p>
+                        <a href="{{ route('recette.detail', $recipe->id) }}" class="btn btn-primary">Voir la recette</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endforeach
     </div>
-   
-</x-app-layout>
+</div>
+@endsection
