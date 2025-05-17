@@ -58,10 +58,8 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [ProfileController::class, 'index']);
     
-    Route::get('/recette/search', [RecetteController::class, 'search'])->name('recette.search');
-    Route::get('/recette/{id}', [RecetteController::class, 'detail'])->name('recette.detail');
-    Route::post('/recette/{id}/toggle-favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-    Route::get('/user/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::resource('/recipes', [UserRecetteController::class]);
+    Route::resource('/favorites', [UserFavoriteController::class]);
     
     /*
     Route::get('/user/dashboard', function () {
