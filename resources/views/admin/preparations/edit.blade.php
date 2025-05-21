@@ -1,4 +1,3 @@
-
 @extends('admin.base')
 
 @section('title', 'Modifier une préparation')
@@ -22,7 +21,7 @@
                     <option value="">Sélectionner une recette</option>
                     @foreach($recettes as $recette)
                         <option value="{{ $recette->id }}" 
-                                {{ (old('id_recette', $preparation->id_recette) == $recette->id) ? 'selected' : '' }}>
+                                {{ old('id_recette', $preparation->id_recette) == $recette->id ? 'selected' : '' }}>
                             {{ $recette->name }}
                         </option>
                     @endforeach
@@ -33,61 +32,35 @@
             </div>
 
             <div class="mb-3">
-                <label for="id_ingredient" class="form-label">Ingrédient</label>
-                <select class="form-select @error('id_ingredient') is-invalid @enderror" 
-                        id="id_ingredient" 
-                        name="id_ingredient" 
-                        required>
-                    <option value="">Sélectionner un ingrédient</option>
-                    @foreach($ingredients as $ingredient)
-                        <option value="{{ $ingredient->id }}" 
-                                {{ (old('id_ingredient', $preparation->id_ingredient) == $ingredient->id) ? 'selected' : '' }}>
-                            {{ $ingredient->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('id_ingredient')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="quantity" class="form-label">Quantité</label>
-                <input type="text" 
-                       class="form-control @error('quantity') is-invalid @enderror" 
-                       id="quantity" 
-                       name="quantity" 
-                       value="{{ old('quantity', $preparation->quantity) }}"
-                       required>
-                @error('quantity')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="temps_de_preparation" class="form-label">Temps de préparation (minutes)</label>
+                <label for="nombre_etapes" class="form-label">Nombre d'étapes</label>
                 <input type="number" 
-                       class="form-control @error('temps_de_preparation') is-invalid @enderror" 
-                       id="temps_de_preparation" 
-                       name="temps_de_preparation" 
-                       value="{{ old('temps_de_preparation', $preparation->temps_de_preparation) }}"
+                       class="form-control @error('nombre_etapes') is-invalid @enderror"
+                       id="nombre_etapes"
+                       name="nombre_etapes"
+                       value="{{ old('nombre_etapes', $preparation->nombre_etapes) }}"
                        min="1"
-                       required>
-                @error('temps_de_preparation')
+                       required
+                       onchange="generateStepFields(this.value)">
+                @error('nombre_etapes')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control @error('description') is-invalid @enderror" 
-                          id="description" 
-                          name="description" 
-                          rows="3"
-                          required>{{ old('description', $preparation->description) }}</textarea>
-                @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div id="etapes-container">
+                @foreach($preparation->etapes as $index => $etape)
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5>Étape {{ $index + 1 }}</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="etapes[{{ $index }}][description]" 
+                                      class="form-control" 
+                                      required
+                                      rows="3">{{ old("etapes.$index.description", $etape->description) }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
             </div>
 
             <div class="d-flex gap-2">
@@ -97,4 +70,30 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+function generateStepFields(number) {
+    const container = document.getElementById('etapes-container');
+    container.innerHTML = '';
+    
+    for(let i = 0; i < number; i++) {
+        container.innerHTML += `
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5>Étape ${i + 1}</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="etapes[${i}][description]" 
+                                  class="form-control" 
+                                  required
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+</script>
+@endpush
 @endsection

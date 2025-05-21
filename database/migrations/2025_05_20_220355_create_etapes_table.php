@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ingredients', function (Blueprint $table) {
+        Schema::create('etapes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('image')->nullable();
+            $table->foreignId('preparation_id')->constrained()->onDelete('cascade'); // relation avec preparations
+            $table->unsignedInteger('numero'); // numéro de l’étape (1, 2, 3…)
+            $table->text('description'); // contenu de l’étape
             $table->timestamps();
-            
-    
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ingredients');
+        Schema::dropIfExists('etapes');
     }
 };

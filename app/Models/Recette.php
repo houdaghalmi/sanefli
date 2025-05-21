@@ -30,4 +30,9 @@ class Recette extends Model
     {
         return $this->hasMany(Fav::class, 'id_recette');
     }
+    public function ingredients()
+{
+    return $this->belongsToMany(Ingredient::class);
+}
+
 }

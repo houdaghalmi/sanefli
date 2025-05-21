@@ -58,7 +58,7 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [ProfileController::class, 'index']);
     
-    Route::resource('/recipes', [UserRecetteController::class]);
+    /*Route::resource('/recipes', [UserRecetteController::class]);
     Route::resource('/favorites', [UserFavoriteController::class]);
     
     /*

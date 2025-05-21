@@ -10,10 +10,10 @@ class Preparation extends Model
     use HasFactory;
     protected $fillable = [
         'id_recette',
-        'id_ingredient',
         'quantity',
         'temps_de_preparation',
-        'description'
+        'description',
+        'nombre_etapes',
     ];
 
     public function recette()
@@ -21,8 +21,10 @@ class Preparation extends Model
         return $this->belongsTo(Recette::class, 'id_recette');
     }
 
-    public function ingredient()
+  
+     public function etapes()
     {
-        return $this->belongsTo(Ingredient::class, 'id_ingredient');
+        return $this->hasMany(Etape::class)->orderBy('numero');
     }
+
 }
