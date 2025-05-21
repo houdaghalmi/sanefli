@@ -33,11 +33,11 @@
                             <div class="d-flex gap-2">
                                 <a href="{{ route('admin.preparations.show', $preparation->id) }}" 
                                    class="btn btn-sm btn-info">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-eye">view</i>
                                 </a>
                                 <a href="{{ route('admin.preparations.edit', $preparation->id) }}" 
                                    class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-edit">edit</i>
                                 </a>
                                 <form action="{{ route('admin.preparations.destroy', $preparation->id) }}" 
                                       method="POST" 
@@ -47,7 +47,7 @@
                                     <button type="submit" 
                                             class="btn btn-sm btn-danger" 
                                             onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette préparation ?')">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-trash">delete</i>
                                     </button>
                                 </form>
                             </div>

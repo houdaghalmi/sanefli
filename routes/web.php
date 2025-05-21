@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminRecipeController;
 use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\AdminEtapeController;
 use App\Http\Controllers\AdminIngredientController;
 use App\Http\Controllers\AdminPreparationController;
 
@@ -46,6 +47,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
     Route::get('/admin/dashboard', [ProfileController::class, 'index']);
     Route::resource('categories', AdminCategoryController::class);
+    Route::resource('etapes', AdminEtapeController::class);
     Route::resource('recipes', AdminRecipeController::class);
     Route::resource('ingredients', AdminIngredientController::class);
     Route::resource('preparations', AdminPreparationController::class);

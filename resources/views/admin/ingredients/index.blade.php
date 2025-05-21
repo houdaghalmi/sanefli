@@ -23,7 +23,6 @@
                     <tr>
                         <th>Image</th>
                         <th>Nom</th>
-                        <th>Utilisé dans</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -38,12 +37,9 @@
                             @endif
                         </td>
                         <td>{{ $ingredient->name }}</td>
-                        <td>{{ $ingredient->preparations->count() }} recette(s)</td>
+
                         <td>
                             <div class="d-flex gap-2">
-                                <a href="{{ route('admin.ingredients.show', $ingredient->id) }}" class="btn btn-sm btn-info">
-                                    <i class="fas fa-eye">view</i>
-                                </a>
                                 <a href="{{ route('admin.ingredients.edit', $ingredient->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit">edit</i>
                                 </a>

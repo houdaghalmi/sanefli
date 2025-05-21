@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Recette;
 use App\Models\Category;
+use App\Models\Ingredient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,14 +13,15 @@ class AdminRecipeController extends Controller
 {
     public function index()
     {
-        $recipes = Recette::with('category')->get();
+        $recipes = Recette::with(['category', 'ingredients'])->get();
         return view('admin.recipes.index', compact('recipes'));
     }
 
     public function create()
     {
         $categories = Category::all();
-        return view('admin.recipes.create', compact('categories'));
+        $ingredients = Ingredient::all();
+        return view('admin.recipes.create', compact('categories', 'ingredients'));
     }
 
     public function store(Request $request)
@@ -27,61 +29,81 @@ class AdminRecipeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'id_category' => 'required|exists:categories,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'ingredients' => 'required|array',
+            'ingredients.*' => 'exists:ingredients,id'
         ]);
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            
-            // Store the image
             $path = $file->storeAs('recipes', $filename, 'public');
             $validated['image'] = $path;
         }
 
-        Recette::create($validated);
+        $recipe = Recette::create($validated);
+        $recipe->ingredients()->sync($request->ingredients);
+
         return redirect()->route('admin.recipes.index')->with('success', 'Recette ajoutée.');
     }
 
-    public function edit(Recette $recette)
+  public function show(Recette $recipe)
+{
+    $recipe->load([
+        'category',
+        'ingredients',
+        'preparations' => function($query) {
+            $query->with(['etapes' => function($q) {
+                $q->orderBy('numero');
+            }]);
+        }
+    ]);
+    
+    return view('admin.recipes.show', compact('recipe'));
+}
+
+    public function edit(Recette $recipe)
     {
         $categories = Category::all();
-        return view('admin.recipes.edit', compact('recette', 'categories'));
+        $ingredients = Ingredient::all();
+        $recipe->load('ingredients');
+        return view('admin.recipes.edit', compact('recipe', 'categories', 'ingredients'));
     }
 
-    public function update(Request $request, Recette $recette)
+    public function update(Request $request, Recette $recipe)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'id_category' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'ingredients' => 'required|array',
+            'ingredients.*' => 'exists:ingredients,id'
         ]);
 
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($recette->image) {
-                Storage::disk('public')->delete($recette->image);
+            if ($recipe->image) {
+                Storage::disk('public')->delete($recipe->image);
             }
-
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            
-            // Store the new image
             $path = $file->storeAs('recipes', $filename, 'public');
             $validated['image'] = $path;
         }
 
-        $recette->update($validated);
+        $recipe->update($validated);
+        $recipe->ingredients()->sync($request->ingredients);
+
         return redirect()->route('admin.recipes.index')->with('success', 'Recette modifiée.');
     }
 
-    public function destroy(Recette $recette)
+    public function destroy(Recette $recipe)
     {
-        if ($recette->image) {
-            Storage::disk('public')->delete($recette->image);
+        if ($recipe->image) {
+            Storage::disk('public')->delete($recipe->image);
         }
         
-        $recette->delete();
+        $recipe->ingredients()->detach();
+        $recipe->delete();
         return redirect()->route('admin.recipes.index')->with('success', 'Recette supprimée.');
     }
 }

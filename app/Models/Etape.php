@@ -19,4 +19,5 @@ class Etape extends Model
     {
         return $this->belongsTo(Preparation::class);
     }
+
 }

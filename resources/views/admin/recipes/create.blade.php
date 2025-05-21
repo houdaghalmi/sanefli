@@ -44,6 +44,25 @@
             </div>
 
             <div class="mb-3">
+                <label for="ingredients" class="form-label">Ingrédients</label>
+                <select class="form-select @error('ingredients') is-invalid @enderror" 
+                        id="ingredients" 
+                        name="ingredients[]" 
+                        multiple
+                        required>
+                    @foreach($ingredients as $ingredient)
+                        <option value="{{ $ingredient->id }}" 
+                                {{ in_array($ingredient->id, old('ingredients', [])) ? 'selected' : '' }}>
+                            {{ $ingredient->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('ingredients')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
                 <input type="file" 
                        class="form-control @error('image') is-invalid @enderror" 
@@ -87,6 +106,14 @@ function previewImage(input) {
         preview.classList.add('d-none');
     }
 }
+
+// Initialize select2 for ingredients
+document.addEventListener('DOMContentLoaded', function() {
+    $('#ingredients').select2({
+        placeholder: "Sélectionnez des ingrédients",
+        allowClear: true
+    });
+});
 </script>
 @endpush
 @endsection

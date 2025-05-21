@@ -26,6 +26,8 @@ class AdminPreparationController extends Controller
     {
         $validated = $request->validate([
             'id_recette' => 'required|exists:recettes,id',
+            'quantity' => 'required|string',
+            'temps_de_preparation' => 'required|integer|min:1',
             'nombre_etapes' => 'required|integer|min:1',
             'etapes' => 'required|array|size:' . $request->nombre_etapes,
             'etapes.*.description' => 'required|string'
@@ -33,12 +35,14 @@ class AdminPreparationController extends Controller
 
         $preparation = Preparation::create([
             'id_recette' => $validated['id_recette'],
+            'quantity' => $validated['quantity'],
+            'temps_de_preparation' => $validated['temps_de_preparation'],
             'nombre_etapes' => $validated['nombre_etapes']
         ]);
 
         foreach ($validated['etapes'] as $index => $etape) {
             $preparation->etapes()->create([
-                'numero_etape' => $index + 1,
+                'numero' => $index + 1,
                 'description' => $etape['description']
             ]);
         }
@@ -47,11 +51,17 @@ class AdminPreparationController extends Controller
             ->with('success', 'Préparation créée avec succès');
     }
 
-    public function show(Preparation $preparation)
-    {
-        $preparation->load(['recette', 'etapes']);
-        return view('admin.preparations.show', compact('preparation'));
-    }
+  public function show(Preparation $preparation)
+{
+    $preparation->load([
+        'recette.category',
+        'etapes' => function($query) {
+            $query->orderBy('numero');
+        }
+    ]);
+    
+    return view('admin.preparations.show', compact('preparation'));
+}
 
     public function edit(Preparation $preparation)
     {
@@ -64,6 +74,8 @@ class AdminPreparationController extends Controller
     {
         $validated = $request->validate([
             'id_recette' => 'required|exists:recettes,id',
+            'quantity' => 'required|string',
+            'temps_de_preparation' => 'required|integer|min:1',
             'nombre_etapes' => 'required|integer|min:1',
             'etapes' => 'required|array|size:' . $request->nombre_etapes,
             'etapes.*.description' => 'required|string'
@@ -71,6 +83,8 @@ class AdminPreparationController extends Controller
 
         $preparation->update([
             'id_recette' => $validated['id_recette'],
+            'quantity' => $validated['quantity'],
+            'temps_de_preparation' => $validated['temps_de_preparation'],
             'nombre_etapes' => $validated['nombre_etapes']
         ]);
 
@@ -80,7 +94,7 @@ class AdminPreparationController extends Controller
         // Create new steps
         foreach ($validated['etapes'] as $index => $etape) {
             $preparation->etapes()->create([
-                'numero_etape' => $index + 1,
+                'numero' => $index + 1,
                 'description' => $etape['description']
             ]);
         }

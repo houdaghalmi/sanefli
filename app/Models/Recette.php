@@ -16,10 +16,10 @@ class Recette extends Model
         return $this->belongsTo(Category::class, 'id_category');
     }
 
-    public function preparations()
-    {
-        return $this->hasOne(Preparation::class, 'id_recette');
-    }
+   public function preparations()
+{
+    return $this->hasMany(Preparation::class, 'id_recette');
+}
 
     public function notations()
     {
@@ -30,9 +30,10 @@ class Recette extends Model
     {
         return $this->hasMany(Fav::class, 'id_recette');
     }
-    public function ingredients()
+public function ingredients()
 {
-    return $this->belongsToMany(Ingredient::class);
+    return $this->belongsToMany(Ingredient::class, 'ingredient_recette');
 }
+
 
 }

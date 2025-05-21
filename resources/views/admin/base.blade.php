@@ -14,10 +14,13 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/recipes/index">Recettes</a>
+                        <a class="nav-link" href="/recipes">Recettes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ingrédients</a>
+                        <a class="nav-link" href="/ingredients">Ingrédients</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="/preparations">Preparations</a>
                     </li>
                 </ul>
             </div>

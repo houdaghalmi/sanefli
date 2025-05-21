@@ -27,6 +27,14 @@
                         <td>{{ $preparation->recette->name }}</td>
                     </tr>
                     <tr>
+                        <th>Quantité</th>
+                        <td>{{ $preparation->quantity }}</td>
+                    </tr>
+                    <tr>
+                        <th>Temps de préparation</th>
+                        <td>{{ $preparation->temps_de_preparation }} minutes</td>
+                    </tr>
+                    <tr>
                         <th>Nombre d'étapes</th>
                         <td>{{ $preparation->nombre_etapes }}</td>
                     </tr>
@@ -39,7 +47,7 @@
             @foreach($preparation->etapes as $etape)
             <div class="card mb-3">
                 <div class="card-body">
-                    <h6>Étape {{ $etape->numero_etape }}</h6>
+                    <h6>Étape {{ $etape->numero }}</h6>
                     <p class="mb-0">{{ $etape->description }}</p>
                 </div>
             </div>

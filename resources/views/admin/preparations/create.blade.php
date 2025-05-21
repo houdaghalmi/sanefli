@@ -31,6 +31,33 @@
             </div>
 
             <div class="mb-3">
+                <label for="quantity" class="form-label">Quantité</label>
+                <input type="text" 
+                       class="form-control @error('quantity') is-invalid @enderror"
+                       id="quantity"
+                       name="quantity"
+                       value="{{ old('quantity') }}"
+                       required>
+                @error('quantity')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="temps_de_preparation" class="form-label">Temps de préparation (minutes)</label>
+                <input type="number" 
+                       class="form-control @error('temps_de_preparation') is-invalid @enderror"
+                       id="temps_de_preparation"
+                       name="temps_de_preparation"
+                       value="{{ old('temps_de_preparation') }}"
+                       min="1"
+                       required>
+                @error('temps_de_preparation')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="nombre_etapes" class="form-label">Nombre d'étapes</label>
                 <input type="number" 
                        class="form-control @error('nombre_etapes') is-invalid @enderror"
@@ -80,6 +107,14 @@ function generateStepFields(number) {
         `;
     }
 }
+
+// Generate fields if nombre_etapes has old value
+document.addEventListener('DOMContentLoaded', function() {
+    const nombreEtapes = document.getElementById('nombre_etapes');
+    if (nombreEtapes.value) {
+        generateStepFields(nombreEtapes.value);
+    }
+});
 </script>
 @endpush
 @endsection
