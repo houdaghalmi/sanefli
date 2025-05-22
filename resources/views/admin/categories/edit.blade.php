@@ -1,35 +1,238 @@
-@extends('admin.base')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Category - Sanefli</title>
+    
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/apple-touch-icon.png') }}">
 
-@section('title', 'Modifier la catégorie')
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #2D3748;
+        }
+        
+        .sidebar {
+            background: var(--secondary-color);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding-top: 1rem;
+        }
 
-@section('content')
-<div class="card">
-    <div class="card-header">
-        <h4>Éditer : {{ $category->name }}</h4>
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table th {
+            color: var(--secondary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 25px;
+        }
+
+        .btn-outline-danger {
+            border-radius: 25px;
+        }
+
+        .badge {
+            background-color: var(--primary-color) !important;
+            color: #fff !important;
+            padding: 8px 15px;
+            border-radius: 15px;
+        }
+
+        .page-header h2 {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: var(--primary-color);
+            color: var(--secondary-color);
+            border-radius: 15px;
+        }
+
+        .nav-link {
+            color: #fff;
+            padding: 0.8rem 1rem;
+            margin: 0.2rem 0;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--primary-color);
+        }
+
+        .logo-wrapper {
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-text {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+        }
+
+        .logo-text:hover {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        .form-label {
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-wrapper text-center">
+            <a href="{{ route('admin.dashboard') }}" class="logo-text">
+                SANEFLI
+            </a>
+        </div>
+        
+        <div class="nav flex-column">
+            <a class="nav-link {{ Request::is('admin/dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                <i class="fas fa-gauge-high me-2"></i> Dashboard
+            </a>
+            <a class="nav-link {{ Request::is('admin/recipes*') ? 'active' : '' }}" href="{{ route('admin.recipes.index') }}">
+                <i class="fas fa-utensils me-2"></i> Recipes
+            </a>
+            <a class="nav-link {{ Request::is('admin/ingredients*') ? 'active' : '' }}" href="{{ route('admin.ingredients.index') }}">
+                <i class="fas fa-carrot me-2"></i> Ingredients
+            </a>
+            <a class="nav-link {{ Request::is('admin/categories*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
+                <i class="fas fa-tags me-2"></i> Categories
+            </a>
+            <a class="nav-link {{ Request::is('admin/preparations*') ? 'active' : '' }}" href="{{ route('admin.preparations.index') }}">
+                <i class="fas fa-blender me-2"></i> Preparations
+            </a>
+        </div>
     </div>
-    <div class="card-body">
-        <form action="{{ route('admin.categories.update', $category->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-            
-            <div class="mb-3">
-                <label for="name" class="form-label">Nom</label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                       id="name" name="name" value="{{ old('name', $category->name) }}" required>
-                @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">Edit Category</h2>
+                <p class="text-muted">Modify category details</p>
             </div>
-            
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="3">{{ old('description', $category->description) }}</textarea>
+            <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i> Back to Categories
+            </a>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card">
+            <div class="card-body p-4">
+                <form action="{{ route('admin.categories.update', $category->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Category Name</label>
+                        <input type="text" 
+                               class="form-control @error('name') is-invalid @enderror" 
+                               id="name" 
+                               name="name" 
+                               value="{{ old('name', $category->name) }}" 
+                               required>
+                        @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i> Update Category
+                        </button>
+                    </div>
+                </form>
             </div>
-            
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Mettre à jour
-            </button>
-        </form>
+        </div>
     </div>
-</div>
-@endsection
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

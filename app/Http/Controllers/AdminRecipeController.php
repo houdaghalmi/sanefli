@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Recette;
 use App\Models\Category;
 use App\Models\Ingredient;
@@ -13,7 +12,8 @@ class AdminRecipeController extends Controller
 {
     public function index()
     {
-        $recipes = Recette::with(['category', 'ingredients'])->get();
+        // Pagination de 6 recettes par page
+        $recipes = Recette::with(['category', 'ingredients'])->paginate(6);
         return view('admin.recipes.index', compact('recipes'));
     }
 
@@ -47,20 +47,20 @@ class AdminRecipeController extends Controller
         return redirect()->route('admin.recipes.index')->with('success', 'Recette ajoutée.');
     }
 
-  public function show(Recette $recipe)
-{
-    $recipe->load([
-        'category',
-        'ingredients',
-        'preparations' => function($query) {
-            $query->with(['etapes' => function($q) {
-                $q->orderBy('numero');
-            }]);
-        }
-    ]);
-    
-    return view('admin.recipes.show', compact('recipe'));
-}
+    public function show(Recette $recipe)
+    {
+        $recipe->load([
+            'category',
+            'ingredients',
+            'preparations' => function ($query) {
+                $query->with(['etapes' => function ($q) {
+                    $q->orderBy('numero');
+                }]);
+            }
+        ]);
+
+        return view('admin.recipes.show', compact('recipe'));
+    }
 
     public function edit(Recette $recipe)
     {
@@ -101,7 +101,7 @@ class AdminRecipeController extends Controller
         if ($recipe->image) {
             Storage::disk('public')->delete($recipe->image);
         }
-        
+
         $recipe->ingredients()->detach();
         $recipe->delete();
         return redirect()->route('admin.recipes.index')->with('success', 'Recette supprimée.');

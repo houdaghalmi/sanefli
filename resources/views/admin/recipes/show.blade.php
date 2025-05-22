@@ -1,4 +1,7 @@
-@extends('admin.base')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @extends('admin.base')
 
 @section('title', 'Détails de la recette')
 
@@ -61,46 +64,41 @@
             </div>
         </div>
 
-   
-
-            @forelse($recipe->preparations as $preparation)
-            <div class="card mb-4">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Préparation </h6>
-                </div>
-                <div class="card-body">
-                    <h6>Étapes:</h6>
-                    <ol class="mb-3">
-                        @foreach($preparation->etapes as $etape)
-                        <li>{{ $etape->description }}</li>
-                        @endforeach
-                    </ol>
-                          <div >
-                           <h6>temp de preparation : <span >{{ $preparation->temps_de_preparation }} minutes</span></h6> 
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ $recipe->name }}</h3>
+                        <span class="badge bg-primary mb-3">{{ $recipe->category->name }}</span>
                         
-                        <h6>quantity :  <span >{{ $preparation->quantity }}</span> </h6>
-                      
-                    </div>
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ route('admin.preparations.edit', $preparation->id) }}" class="btn btn-sm btn-outline-warning">
-                            <i class="fas fa-edit"></i> Modifier
-                        </a>
-                        <form action="{{ route('admin.preparations.destroy', $preparation->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette préparation?')">
-                                <i class="fas fa-trash"></i> Supprimer
-                            </button>
-                        </form>
+                        <p class="text-muted">{{ $recipe->description }}</p>
+                        
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Créé le</h5>
+                                <p>{{ $recipe->created_at->format('d F, Y') }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Dernière mise à jour</h5>
+                                <p>{{ $recipe->updated_at->format('d F, Y') }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            @empty
-            <div class="alert alert-info">
-                Aucune préparation n'a été définie pour cette recette.
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ asset('storage/'.$recipe->image) }}" 
+                         alt="{{ $recipe->name }}" 
+                         class="card-img-top">
+                </div>
             </div>
-            @endforelse
         </div>
     </div>
-</div>
-@endsection
+
+    <!-- Scripts -->
+</body>
+</html>

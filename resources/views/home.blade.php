@@ -16,8 +16,8 @@
     <meta name="author" content="">
 
     <!-- Site Icons -->
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -35,6 +35,24 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        .logo-header span {
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 2px;
+            transition: color 0.3s ease;
+        }
+        
+        .logo-header:hover span {
+            color: #fff !important;
+        }
+        
+        .footer-logo span {
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 3px;
+            display: inline-block;
+            padding: 10px 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -57,7 +75,7 @@
                                 </button>
                                 <div class="logo">
                                     <a class="navbar-brand js-scroll-trigger logo-header" href="#">
-                                        <img src="images/logo.png" alt="Sanefli Logo">
+                                        <span style="font-size: 24px; font-weight: bold; color: #FF6B35;">SANEFLI</span>
                                     </a>
                                 </div>
                             </div>
@@ -65,9 +83,9 @@
                                 <ul class="nav navbar-nav navbar-right">
                                     <li class="active"><a href="#banner">Home</a></li>
                                     <li><a href="#about">About us</a></li>
-                                    <li><a href="#menu">Best of Sanefli</a></li>
-                                    <li><a href="#our_team">Team</a></li>
-                                    <li><a href="#reservation">Sign In</a></li>
+                                    <li><a href="#owl-demo">Best of Sanefli</a></li>
+                                    <li><a href="{{ route('login') }}">Sign In</a></li>
+                                     <li><a href="#reservation">Sign Up</a></li>
                                     <li><a href="#footer">Contact us</a></li>
                                 </ul>
                             </div>
@@ -94,7 +112,7 @@
                             <h2>Today's Inspiration</h2>
                             <p>Join Sanefli and turn your food cravings into delicious creations!!</p>
                             <div class="book-btn">
-                                <a href="#reservation" class="table-btn hvr-underline-from-center">Rejoindre Sanefli !!</a>
+                                <a href="#reservation" class="table-btn hvr-underline-from-center">Join Sanefli !!</a>
                             </div>
                             <a href="#about">
                                 <div class="mouse"></div>
@@ -128,8 +146,8 @@
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
                         <div class="about-images">
-                            <img class="about-main" src="images/about-main.jpg" alt="About Main Image">
-                            <img class="about-inset" src="images/about-inset.jpg" alt="About Inset Image">
+                            <img class="about-main" src="assets/images/about-main.jpg" alt="About Main Image">
+                            <img class="about-inset" src="assets/images/about-inset.jpg" alt="About Inset Image">
                         </div>
                     </div>
                 </div>
@@ -161,7 +179,7 @@
                                     </div>
                                 </a>
                                 <div class="item-img">
-                                    <img src="images/special-menu-1.jpg" alt="sp-menu">
+                                    <img src="assets/images/special-menu-1.jpg" alt="sp-menu">
                                 </div>
                             </div>
                             <div class="item item-type-zoom">
@@ -175,7 +193,7 @@
                                     </div>
                                 </a>
                                 <div class="item-img">
-                                    <img src="images/special-menu-2.jpg" alt="sp-menu">
+                                    <img src="assets/images/special-menu-2.jpg" alt="sp-menu">
                                 </div>
                             </div>
                             <div class="item item-type-zoom">
@@ -189,7 +207,7 @@
                                     </div>
                                 </a>
                                 <div class="item-img">
-                                    <img src="images/special-menu-3.jpg" alt="sp-menu">
+                                    <img src="assets/images/special-menu-3.jpg" alt="sp-menu">
                                 </div>
                             </div>
                         </div>
@@ -203,173 +221,72 @@
         <!-- end container -->
     </div>
 
-    <div id="our_team" class="team-main pad-top-100 pad-bottom-100 parallax">
-        <div class="container">
-            <div class="row">
+
+   <div id="reservation" class="reservations-main pad-top-100 pad-bottom-100">
+    <div class="container">
+        <div class="row">
+            <div class="form-reservations-box">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
-                        <h2 class="block-title text-center">Our Team</h2>
-                        <p class="title-caption text-center">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
+                        <h2 class="block-title text-center">Create Account</h2>
                     </div>
-                    <div class="team-box">
-                        <div class="row">
-                            <div class="col-md-4 col-sm-6">
-                                <div class="sf-team">
-                                    <div class="thumb">
-                                        <a href="#"><img src="images/staff-01.jpg" alt="Staff 1"></a>
-                                    </div>
-                                    <div class="text-col">
-                                        <h3>John Doggett</h3>
-                                        <p>Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Aenean commodo ligula.</p>
-                                        <ul class="team-social">
-                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                    <h4 class="form-title">Join Sanefli</h4>
+                    <p>Fill in the form to create your account</p>
+
+                    <form method="POST" action="{{ route('register') }}" class="reservations-box">
+                        @csrf
+
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-box">
+                                <input type="text" name="name" placeholder="Full Name" value="{{ old('name') }}" required>
+                                @error('name')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
-                            <!-- end col -->
-                            <div class="col-md-4 col-sm-6">
-                                <div class="sf-team">
-                                    <div class="thumb">
-                                        <a href="#"><img src="images/staff-02.jpg" alt="Staff 2"></a>
-                                    </div>
-                                    <div class="text-col">
-                                        <h3>Jeffrey Spender</h3>
-                                        <p>Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Aenean commodo ligula.</p>
-                                        <ul class="team-social">
-                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-md-4 col-sm-6">
-                                <div class="sf-team">
-                                    <div class="thumb">
-                                        <a href="#"><img src="images/staff-03.jpg" alt="Staff 3"></a>
-                                    </div>
-                                    <div class="text-col">
-                                        <h3>Monica Reyes</h3>
-                                        <p>Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Aenean commodo ligula.</p>
-                                        <ul class="team-social">
-                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end col -->
                         </div>
-                        <!-- end row -->
-                    </div>
-                    <!-- end team-box -->
-                </div>
-                <!-- end col -->
-            </div>
-            <!-- end row -->
-        </div>
-        <!-- end container -->
-    </div>
 
-    <div id="reservation" class="reservations-main pad-top-100 pad-bottom-100">
-        <div class="container">
-            <div class="row">
-                <div class="form-reservations-box">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
-                            <h2 class="block-title text-center">Reservations</h2>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-box">
+                                <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                                @error('email')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
                         </div>
-                        <h4 class="form-title">BOOKING FORM</h4>
-                        <p>PLEASE FILL OUT ALL REQUIRED* FIELDS. THANKS!</p>
 
-                        <form id="contact-form" method="post" class="reservations-box" name="contactform" action="mail.php">
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <input type="text" name="form_name" id="form_name" placeholder="Name" required="required" data-error="Firstname is required.">
-                                </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-box">
+                                <input type="password" name="password" placeholder="Password" required>
+                                @error('password')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
-                            <!-- end col -->
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <input type="email" name="email" id="email" placeholder="E-Mail ID" required="required" data-error="E-mail id is required.">
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <input type="text" name="phone" id="phone" placeholder="contact no.">
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <select name="no_of_persons" id="no_of_persons" class="selectpicker">
-                                        <option selected disabled>No. Of persons</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <input type="text" name="date-picker" id="date-picker" placeholder="Date" required="required" data-error="Date is required." />
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <input type="text" name="time-picker" id="time-picker" placeholder="Time" required="required" data-error="Time is required." />
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <select name="preferred_food" id="preferred_food" class="selectpicker">
-                                        <option selected disabled>preferred food</option>
-                                        <option>Indian</option>
-                                        <option>Continental</option>
-                                        <option>Mexican</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-box">
-                                    <select name="occasion" id="occasion" class="selectpicker">
-                                        <option selected disabled>Occasion</option>
-                                        <option>Wedding</option>
-                                        <option>Birthday</option>
-                                        <option>Anniversary</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- end col -->
+                        </div>
 
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <div class="reserve-book-btn text-center">
-                                    <button class="hvr-underline-from-center" type="submit" value="SEND" id="submit">BOOK MY TABLE</button>
-                                </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-box">
+                                <input type="password" name="password_confirmation" placeholder="Confirm Password" required>
                             </div>
-                            <!-- end col -->
-                        </form>
-                        <!-- end form -->
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="reserve-book-btn text-center">
+                                <button type="submit" class="hvr-underline-from-center">Sign Up</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="text-center" style="margin-top: 20px;">
+                        <p>Already have an account? <a href="{{ route('login') }}">Sign in here</a></p>
                     </div>
-                    <!-- end col -->
                 </div>
-                <!-- end reservations-box -->
             </div>
-            <!-- end row -->
         </div>
-        <!-- end container -->
     </div>
-    <!-- end reservations-main -->
+</div>
+
+   
+
 
     <div id="footer" class="footer-main">
         <div class="footer-news pad-top-100 pad-bottom-70 parallax">
@@ -377,114 +294,31 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
-                            <h2 class="ft-title color-white text-center">Newsletter</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                            <h2 class="ft-title color-white text-center">Contact Us</h2>
+                            <p>If you have any questions or suggestions, feel free to reach out to us.</p>
                         </div>
                         <form>
                             <input type="email" placeholder="Enter your e-mail id">
                             <a href="#" class="orange-btn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></a>
                         </form>
                     </div>
-                    <!-- end col -->
+               
                 </div>
-                <!-- end row -->
+                
             </div>
-            <!-- end container -->
+        >
         </div>
-        <!-- end footer-news -->
+       
         <div class="footer-box pad-top-70">
             <div class="container">
                 <div class="row">
                     <div class="footer-in-main">
                         <div class="footer-logo">
                             <div class="text-center">
-                                <img src="images/logo.png" alt="Footer Logo">
+                                <span style="font-size: 32px; font-weight: bold; color: #FF6B35;">SANEFLI</span>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="footer-box-a">
-                                <h3>About Us</h3>
-                                <p>Aenean commodo ligula eget dolor aenean massa. Cum sociis nat penatibu set magnis dis parturient montes.</p>
-                                <ul class="socials-box footer-socials pull-left">
-                                    <li>
-                                        <a href="#">
-                                            <div class="social-circle-border"><i class="fa fa-facebook"></i></div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="social-circle-border"><i class="fa fa-twitter"></i></div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="social-circle-border"><i class="fa fa-google-plus"></i></div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="social-circle-border"><i class="fa fa-pinterest"></i></div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="social-circle-border"><i class="fa fa-linkedin"></i></div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- end footer-box-a -->
-                        </div>
-                        <!-- end col -->
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="footer-box-b">
-                                <h3>New Menu</h3>
-                                <ul>
-                                    <li><a href="#">Italian Bomba Sandwich</a></li>
-                                    <li><a href="#">Double Dose of Pork Belly</a></li>
-                                    <li><a href="#">Spicy Thai Noodles</a></li>
-                                    <li><a href="#">Triple Truffle Trotters</a></li>
-                                </ul>
-                            </div>
-                            <!-- end footer-box-b -->
-                        </div>
-                        <!-- end col -->
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="footer-box-c">
-                                <h3>Contact Us</h3>
-                                <p>
-                                    <i class="fa fa-map-signs" aria-hidden="true"></i>
-                                    <span>6 E Esplanade, St Albans VIC 3021, Australia</span>
-                                </p>
-                                <p>
-                                    <i class="fa fa-mobile" aria-hidden="true"></i>
-                                    <span>+91 80005 89080</span>
-                                </p>
-                                <p>
-                                    <i class="fa fa-envelope" aria-hidden="true"></i>
-                                    <span><a href="#">support@foodfunday.com</a></span>
-                                </p>
-                            </div>
-                            <!-- end footer-box-c -->
-                        </div>
-                        <!-- end col -->
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="footer-box-d">
-                                <h3>Opening Hours</h3>
-                                <ul>
-                                    <li>
-                                        <p>Monday - Thursday</p>
-                                        <span>11:00 AM - 9:00 PM</span>
-                                    </li>
-                                    <li>
-                                        <p>Friday - Saturday</p>
-                                        <span>11:00 AM - 5:00 PM</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- end footer-box-d -->
-                        </div>
-                        <!-- end col -->
+                   
                     </div>
                     <!-- end footer-in-main -->
                 </div>
@@ -495,7 +329,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h6 class="copy-title">Copyright &copy; 2018 Food Funday is powered by <a href="https://themewagon.com/" target="_blank">ThemeWagon</a></h6>
+                            <h6 class="copy-title"> 2025 Sanefli </h6>
                         </div>
                     </div>
                     <!-- end row -->
