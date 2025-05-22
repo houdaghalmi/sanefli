@@ -242,10 +242,7 @@
                     </div>
                 @endforeach
             </div>
-            
-            <div class="d-flex justify-content-center mt-4">
-                {{ $recipes->links() }}
-            </div>
+           
         @else
             <div class="alert alert-info">
                 Aucune recette disponible pour le moment.

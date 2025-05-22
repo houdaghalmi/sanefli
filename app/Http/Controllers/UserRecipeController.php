@@ -25,21 +25,29 @@ class UserRecipeController extends Controller
         return view('user.recipes.index', compact('recipes'));
     }
 
-    public function show(string $id)
-    {
-        $recipe = Recette::with(['ingredients', 'category'])
-            ->findOrFail($id);
-        
-        $similarRecipes = Recette::where('id_category', $recipe->id_category)
-            ->where('id', '!=', $recipe->id)
-            ->limit(3)
-            ->get();
+public function show(string $id)
+{
+    $recipe = Recette::with([
+        'category',
+        'ingredients', 
+        'preparation',
+        'preparation.etapes' => function($query) {
+            $query->orderBy('numero');
+        }
+       
+    ])->findOrFail($id);
 
-        return view('user.recipes.show', [
-            'recipe' => $recipe,
-            'similarRecipes' => $similarRecipes
-        ]);
-    }
+    $similarRecipes = Recette::where('id_category', $recipe->id_category)
+        ->where('id', '!=', $recipe->id)
+        ->with(['category'])
+        ->limit(3)
+        ->get();
+
+    return view('user.recipes.show', [
+        'recipe' => $recipe,
+        'similarRecipes' => $similarRecipes
+    ]);
+}
 
     public function autocompleteIngredients(Request $request)
     {
