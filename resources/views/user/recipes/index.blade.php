@@ -127,6 +127,35 @@
         margin-right: 5px;
         margin-bottom: 5px;
     }
+    
+    /* Rating styles */
+    .recipe-rating {
+        font-size: 0.9rem;
+    }
+
+    .rating-stars {
+        color: #ffc107;
+    }
+
+    .user-rating {
+        cursor: pointer;
+    }
+
+    .rating-star {
+        transition: all 0.2s ease;
+    }
+
+    .rating-star:hover {
+        transform: scale(1.2);
+    }
+
+    .text-warning {
+        color: #ffc107 !important;
+    }
+
+    .text-secondary {
+        color: #6c757d !important;
+    }
 </style>
 @endsection
 
@@ -213,6 +242,31 @@
                                     <small class="text-muted">{{ $recipe->preparation_time }} min</small><br>
                                     <strong>Catégorie:</strong> {{ $recipe->category->name ?? 'Non spécifiée' }}
                                 </p>
+                                
+                                <!-- Add this rating section -->
+                                <div class="recipe-rating mb-2">
+                                    <div class="stars" data-recipe-id="{{ $recipe->id }}">
+                                        @php
+                                            $averageRating = $recipe->notations->avg('rating');
+                                            $userRating = $recipe->notations->where('user_id', auth()->id())->first()?->rating;
+                                        @endphp
+                                        <div class="rating-stars">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="fas fa-star {{ $i <= $averageRating ? 'text-warning' : 'text-secondary' }}"></i>
+                                            @endfor
+                                            <span class="ms-2 text-muted">({{ number_format($averageRating, 1) }})</span>
+                                        </div>
+                                        @auth
+                                        <div class="user-rating mt-1">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="far fa-star rating-star {{ $i <= $userRating ? 'fas text-warning' : '' }}" 
+                                                   data-value="{{ $i }}" 
+                                                   data-recipe-id="{{ $recipe->id }}"></i>
+                                            @endfor
+                                        </div>
+                                        @endauth
+                                    </div>
+                                </div>
                                 
                                 @if($recipe->ingredients->count() > 0)
                                     <p class="card-text">
@@ -605,6 +659,80 @@ $(document).ready(function() {
             }
         }, 300);
     }
+    
+    // Rating functionality
+    $('.rating-star').hover(
+        function() {
+            const value = $(this).data('value');
+            const stars = $(this).parent().find('.rating-star');
+            stars.each(function(index) {
+                if (index < value) {
+                    $(this).addClass('fas text-warning').removeClass('far');
+                }
+            });
+        },
+        function() {
+            const parent = $(this).parent();
+            const recipeId = $(this).data('recipe-id');
+            const stars = parent.find('.rating-star');
+            
+            // Get current user rating from server
+            $.get(`{{ url('ratings/user') }}/${recipeId}`, function(response) {
+                const userRating = response.rating;
+                stars.each(function(index) {
+                    if (index < userRating) {
+                        $(this).addClass('fas text-warning').removeClass('far');
+                    } else {
+                        $(this).removeClass('fas text-warning').addClass('far');
+                    }
+                });
+            });
+        }
+    );
+
+    $('.rating-star').click(function() {
+        const value = $(this).data('value');
+        const recipeId = $(this).data('recipe-id');
+        const stars = $(this).parent().find('.rating-star');
+        
+        $.ajax({
+            url: '{{ route("user.ratings.store") }}',
+            method: 'POST',
+            data: {
+                recipe_id: recipeId,
+                rating: value,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                // Update user rating stars
+                stars.each(function(index) {
+                    if (index < value) {
+                        $(this).addClass('fas text-warning').removeClass('far');
+                    } else {
+                        $(this).removeClass('fas text-warning').addClass('far');
+                    }
+                });
+                
+                // Update average rating display
+                const recipeCard = $(`[data-recipe-id="${recipeId}"]`);
+                const averageStars = recipeCard.find('.rating-stars .fas');
+                const averageText = recipeCard.find('.rating-stars span');
+                
+                averageStars.each(function(index) {
+                    if (index < response.average) {
+                        $(this).addClass('text-warning');
+                    } else {
+                        $(this).removeClass('text-warning');
+                    }
+                });
+                
+                averageText.text(`(${response.average.toFixed(1)})`);
+            },
+            error: function() {
+                alert('Une erreur est survenue lors de la notation');
+            }
+        });
+    });
     
     // Helper functions
     function extractLastTerm(term) {
