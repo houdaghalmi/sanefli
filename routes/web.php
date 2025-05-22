@@ -60,8 +60,8 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
 
 Route::middleware(['auth', 'role:user'])->name('user.')->group(function () {
     Route::get('/user/dashboard', [ProfileController::class, 'index']);
-    Route::resource('/recipes', UserRecipeController::class);
-    Route::get('/recipes/search', [UserRecipeController::class, 'search'])->name('recipes.search');
+    Route::resource('/recipe', UserRecipeController::class);
+    Route::get('/recipe/search', [UserRecipeController::class, 'search'])->name('recipes.search');
        Route::get('/autocomplete/ingredients', [UserRecipeController::class, 'autocompleteIngredients'])->name('user.recipes.autocomplete');
     Route::resource('/favorites', UserFavoriteController::class);
     Route::get('/favorites/check', [UserFavoriteController::class, 'check'])->name('favorites.check');

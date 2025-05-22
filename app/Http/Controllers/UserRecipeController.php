@@ -4,18 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Recette;
 use App\Models\Ingredient;
-use Illuminate\Http\Request;
+use App\Models\Category;
 use App\Models\Fav;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class UserRecipeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $recipes = Recette::with(['ingredients', 'category'])
-            ->paginate(12);
-            
+        $query = Recette::with(['ingredients', 'category']);
+        
+        // Filter by categories if provided
+        if ($request->has('categories')) {
+            $query->whereIn('id_category', $request->input('categories'));
+        }
+        
+        $recipes = $query->paginate(12);
+        
         return view('user.recipes.index', compact('recipes'));
     }
 
@@ -24,7 +30,6 @@ class UserRecipeController extends Controller
         $recipe = Recette::with(['ingredients', 'category'])
             ->findOrFail($id);
         
-        // Get similar recipes (same category)
         $similarRecipes = Recette::where('id_category', $recipe->id_category)
             ->where('id', '!=', $recipe->id)
             ->limit(3)
@@ -36,30 +41,6 @@ class UserRecipeController extends Controller
         ]);
     }
 
-    public function search(Request $request)
-    {
-        $query = $request->input('ingredient');
-
-        if (empty($query)) {
-            return redirect()->route('user.recipes.index');
-        }
-
-        $recipes = Recette::whereHas('ingredients', function($q) use ($query) {
-                $q->where('name', 'like', '%' . $query . '%');
-            })
-            ->orWhere('name', 'like', '%' . $query . '%')
-            ->with(['ingredients', 'category'])
-            ->paginate(12);
-
-        return view('user.recipes.index', compact('recipes', 'query'));
-    }
-
-    /**
-     * Get ingredients for autocomplete.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function autocompleteIngredients(Request $request)
     {
         $query = $request->get('query');
@@ -80,4 +61,29 @@ class UserRecipeController extends Controller
         
         return response()->json($result);
     }
-} 
+
+    public function toggleFavorite(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $recipeId = $request->input('recipe_id');
+        $userId = Auth::id();
+
+        $existingFavorite = Fav::where('id_user', $userId)
+            ->where('id_recette', $recipeId)
+            ->first();
+
+        if ($existingFavorite) {
+            $existingFavorite->delete();
+            return response()->json(['status' => 'removed']);
+        } else {
+            Fav::create([
+                'id_user' => $userId,
+                'id_recette' => $recipeId
+            ]);
+            return response()->json(['status' => 'added']);
+        }
+    }
+}

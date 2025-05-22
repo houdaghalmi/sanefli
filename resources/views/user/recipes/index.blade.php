@@ -93,7 +93,6 @@
     .typing #ingredient-search {
         border-color: #80bdff;
     }
-    /* Make the autocomplete open upward when near the bottom of the page */
     .ui-autocomplete-up {
         max-height: 300px;
         overflow-y: auto;
@@ -103,12 +102,64 @@
         border-radius: 4px 4px 0 0;
         box-shadow: 0 -4px 8px rgba(0,0,0,0.1);
     }
+    /* Category filter styles */
+    .category-filter-container {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .category-filter-title {
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #495057;
+    }
+    .form-check-label {
+        cursor: pointer;
+        user-select: none;
+    }
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .category-badge {
+        cursor: pointer;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
 </style>
 @endsection
 
 @section('content')
 <div class="container mt-4">
-    <h3 class="mb-4">Nos Recettes</h3>
+    <div class="d-flex justify-content-between mb-3">
+        <h3 class="mb-0">Nos Recettes</h3>
+        <button id="clear-filters" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-times me-1"></i> Réinitialiser les filtres
+        </button>
+    </div>
+
+    <!-- Category Filter Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Filtrer par catégorie</h5>
+            <div class="row">
+                @foreach(App\Models\Category::all() as $category)
+                <div class="col-md-3 col-6 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input category-filter" 
+                               type="checkbox" 
+                               value="{{ $category->id }}" 
+                               id="category-{{ $category->id }}">
+                        <label class="form-check-label" for="category-{{ $category->id }}">
+                            {{ $category->name }}
+                        </label>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
 
     <!-- Ingredients Search Form -->
     <div class="card mb-4">
@@ -118,7 +169,7 @@
                     <label for="ingredient-search" class="form-label">Filtrer par ingrédients</label>
                     <div class="input-group mb-2 search-container">
                         <input type="text" id="ingredient-search" class="form-control" 
-                               placeholder="Ex: tomate, oignon, poulet">
+                               placeholder="Entrez des ingrédients (séparés par des virgules)...">
                         <i class="fas fa-list search-icon" id="show-all-ingredients"></i>
                         <button id="search-btn" class="btn btn-primary">
                             <i class="fas fa-search"></i> Rechercher
@@ -129,7 +180,6 @@
                 <div class="col-md-4">
                     <label class="form-label">Filtres rapides</label>
                     <div class="d-flex flex-wrap" id="popular-ingredients">
-                        <!-- Will be populated by JavaScript -->
                         <div class="spinner-border spinner-border-sm text-primary" role="status">
                             <span class="visually-hidden">Chargement...</span>
                         </div>
@@ -151,7 +201,7 @@
             <div class="row" id="recipes-list">
                 @foreach($recipes as $recipe)
                     <div class="col-md-4 mb-4 recipe-item">
-                        <div class="card h-100 shadow-sm">
+                        <div class="card h-100 shadow-sm" data-category-id="{{ $recipe->category->id ?? '' }}">
                             @if($recipe->image)
                                 <img src="{{ asset('storage/' . $recipe->image) }}" class="card-img-top" alt="{{ $recipe->name }}">
                             @else
@@ -180,7 +230,7 @@
                                 @endif
                                 
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <a href="{{ route('user.recipes.show', $recipe->id) }}" class="btn btn-primary">Voir</a>
+                                    <a href="{{ route('user.recipe.show', $recipe->id) }}" class="btn btn-primary">Voir</a>
                                     @auth
                                     <button class="btn btn-outline-danger favorite-btn" data-recipe-id="{{ $recipe->id }}">
                                         <i class="far fa-heart"></i>
@@ -211,32 +261,28 @@
 $(document).ready(function() {
     console.log("Document ready, initializing recipe filtering");
     
-    // Array to store selected ingredients for filtering
+    // Arrays to store selected filters
     let selectedIngredients = [];
+    let selectedCategories = [];
     
     // Setup autocomplete
     $("#ingredient-search").autocomplete({
         source: function(request, response) {
-            // Extract the last term from a comma-separated list
             const lastTerm = extractLastTerm(request.term);
             
-            // Always search, even with very short input
             $.ajax({
                 url: "{{ route('user.ingredients.autocomplete') }}",
                 data: {
                     query: lastTerm
                 },
                 success: function(data) {
-                    // Process the data to create groupings by letter
                     let result = [];
                     let currentCategory = '';
                     
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].category !== undefined) {
-                            // This is a category header
                             if (currentCategory !== data[i].category) {
                                 currentCategory = data[i].category;
-                                // Add a special category item
                                 result.push({
                                     label: currentCategory,
                                     value: '',
@@ -244,7 +290,6 @@ $(document).ready(function() {
                                 });
                             }
                         } else {
-                            // This is a regular item
                             result.push(data[i]);
                         }
                     }
@@ -256,37 +301,30 @@ $(document).ready(function() {
                 }
             });
         },
-        minLength: 0, // Show all options
-        delay: 0, // No delay for immediate response
+        minLength: 0,
+        delay: 0,
         focus: function() {
-            // Prevent value inserted on focus
             return false;
         },
         select: function(event, ui) {
-            // Skip if it's a category header
             if (ui.item.isCategory) {
                 return false;
             }
             
             const terms = splitTerms(this.value);
-            // Remove the current input
             terms.pop();
-            // Add the selected item
             terms.push(ui.item.value);
-            // Add placeholder to get the comma-and-space at the end
             terms.push("");
             this.value = terms.join(", ");
             return false;
         }
     }).data("ui-autocomplete")._renderItem = function(ul, item) {
         if (item.isCategory) {
-            // Render a category header
             return $("<li>")
                 .addClass("autocomplete-category")
                 .append(item.label)
                 .appendTo(ul);
         } else {
-            // Render a regular item
             return $("<li>")
                 .append("<div class='autocomplete-item'>" + item.label + "</div>")
                 .appendTo(ul);
@@ -306,11 +344,7 @@ $(document).ready(function() {
     // Update suggestions immediately as user types
     $("#ingredient-search").on("keyup", function() {
         $(this).autocomplete("search", $(this).val());
-        
-        // Add typing class to parent for styling
         $('.search-container').addClass('typing');
-        
-        // Remove typing class after delay
         clearTimeout(window.typingTimer);
         window.typingTimer = setTimeout(function() {
             $('.search-container').removeClass('typing');
@@ -332,29 +366,20 @@ $(document).ready(function() {
         console.log("Search button clicked, input:", ingredientInput);
         
         if (ingredientInput) {
-            // Clear previous ingredients
             selectedIngredients = [];
             $('#selected-ingredients').empty();
             
-            // Split by comma and add each ingredient
             const ingredients = ingredientInput.split(',').map(item => item.trim()).filter(item => item !== '');
             console.log("Split ingredients:", ingredients);
             
-            // Add each ingredient to the filter
             ingredients.forEach(ingredient => {
                 addIngredient(ingredient);
             });
             
-            // Clear the input field
             $('#ingredient-search').val('');
-            
-            // Apply filtering
             filterRecipes();
         }
     });
-    
-    // Change input placeholder to indicate comma usage
-    $('#ingredient-search').attr('placeholder', 'Entrez des ingrédients (séparés par des virgules)...');
     
     // Allow pressing Enter in the search box
     $('#ingredient-search').keypress(function(e) {
@@ -373,6 +398,39 @@ $(document).ready(function() {
             addIngredient(ingredient);
             filterRecipes();
         }
+    });
+    
+    // Category checkbox change handler
+    $(document).on('change', '.category-filter', function() {
+        const categoryId = $(this).val();
+        
+        if ($(this).is(':checked')) {
+            if (!selectedCategories.includes(categoryId)) {
+                selectedCategories.push(categoryId);
+            }
+        } else {
+            selectedCategories = selectedCategories.filter(id => id !== categoryId);
+        }
+        
+        console.log("Selected categories:", selectedCategories);
+        filterRecipes();
+    });
+    
+    // Clear filters button handler
+    $('#clear-filters').click(function() {
+        // Clear ingredients
+        selectedIngredients = [];
+        $('#selected-ingredients').empty();
+        
+        // Clear categories
+        selectedCategories = [];
+        $('.category-filter').prop('checked', false);
+        
+        // Clear search input
+        $('#ingredient-search').val('');
+        
+        // Show all recipes
+        filterRecipes();
     });
     
     // Favorite button functionality
@@ -407,7 +465,6 @@ $(document).ready(function() {
         const allIngredients = {};
         console.log("Starting to load popular ingredients");
         
-        // Collect all ingredients from the page
         $('.ingredients-list').each(function() {
             const ingredientsData = $(this).data('ingredients');
             console.log("Found ingredients data:", ingredientsData);
@@ -424,16 +481,13 @@ $(document).ready(function() {
         
         console.log("Collected ingredients:", allIngredients);
         
-        // Sort by frequency
         const sortedIngredients = Object.keys(allIngredients).sort((a, b) => {
             return allIngredients[b] - allIngredients[a];
         });
         
-        // Take the top 10
         const popularIngredients = sortedIngredients.slice(0, 10);
         console.log("Popular ingredients:", popularIngredients);
         
-        // Populate the quick filters
         const container = $('#popular-ingredients');
         container.empty();
         
@@ -464,7 +518,7 @@ $(document).ready(function() {
         
         const badge = $('<span class="badge bg-primary me-1 mb-1">' + name + ' <i class="fas fa-times"></i></span>');
         badge.find('i').click(function(e) {
-            e.stopPropagation(); // Prevent event bubbling
+            e.stopPropagation();
             badge.remove();
             selectedIngredients = selectedIngredients.filter(ing => ing !== normalizedName);
             console.log("Removed ingredient, remaining:", selectedIngredients);
@@ -474,15 +528,13 @@ $(document).ready(function() {
         $('#selected-ingredients').append(badge);
     }
     
-    // Function to filter recipes based on selected ingredients
+    // Function to filter recipes based on selected ingredients and categories
     function filterRecipes() {
-        console.log("Filtering recipes with ingredients:", selectedIngredients);
+        console.log("Filtering recipes with ingredients:", selectedIngredients, "and categories:", selectedCategories);
         
-        // Show loading indicator
         $('#loading-indicator').removeClass('d-none');
         
-        if (selectedIngredients.length === 0) {
-            // If no filters, show all recipes
+        if (selectedIngredients.length === 0 && selectedCategories.length === 0) {
             console.log("No filters applied, showing all recipes");
             $('.recipe-item').show();
             $('#loading-indicator').addClass('d-none');
@@ -490,64 +542,64 @@ $(document).ready(function() {
             return;
         }
         
-        // Hide all recipes initially
         $('.recipe-item').hide();
-        
         let matchCount = 0;
         
-        // Check each recipe
         $('.recipe-item').each(function() {
             const card = $(this);
-            const ingredientsList = card.find('.ingredients-list').data('ingredients');
+            let matchesIngredients = true;
+            let matchesCategories = true;
             
-            if (!ingredientsList) {
-                console.warn("No ingredients data found for recipe", card);
-                return;
+            // Check ingredients if any are selected
+            if (selectedIngredients.length > 0) {
+                const ingredientsList = card.find('.ingredients-list').data('ingredients');
+                
+                if (!ingredientsList) {
+                    console.warn("No ingredients data found for recipe", card);
+                    matchesIngredients = false;
+                } else {
+                    const ingredientsArray = ingredientsList.toLowerCase().split(',');
+                    
+                    matchesIngredients = selectedIngredients.every(ing => 
+                        ingredientsArray.some(recipeIng => recipeIng.trim().includes(ing))
+                    );
+                    
+                    if (matchesIngredients) {
+                        card.find('.ingredient-badge').each(function() {
+                            const badge = $(this);
+                            const ingName = badge.data('name').toLowerCase();
+                            
+                            if (selectedIngredients.some(selected => ingName.includes(selected))) {
+                                badge.removeClass('bg-secondary').addClass('bg-success');
+                            } else {
+                                badge.removeClass('bg-success').addClass('bg-secondary');
+                            }
+                        });
+                    }
+                }
             }
             
-            const ingredientsArray = ingredientsList.toLowerCase().split(',');
-            console.log("Recipe ingredients:", ingredientsArray);
+            // Check categories if any are selected
+            if (selectedCategories.length > 0) {
+                const categoryId = card.find('.card').data('category-id');
+                matchesCategories = selectedCategories.includes(categoryId.toString());
+            }
             
-            // Check if all selected ingredients are in this recipe
-            const hasAllIngredients = selectedIngredients.every(ing => 
-                ingredientsArray.some(recipeIng => recipeIng.trim().includes(ing))
-            );
-            
-            console.log("Recipe has all ingredients:", hasAllIngredients);
-            
-            if (hasAllIngredients) {
+            if (matchesIngredients && matchesCategories) {
                 matchCount++;
-                
-                // Highlight matching ingredients
-                card.find('.ingredient-badge').each(function() {
-                    const badge = $(this);
-                    const ingName = badge.data('name').toLowerCase();
-                    
-                    if (selectedIngredients.some(selected => ingName.includes(selected))) {
-                        badge.removeClass('bg-secondary').addClass('bg-success');
-                    } else {
-                        badge.removeClass('bg-success').addClass('bg-secondary');
-                    }
-                });
-                
-                // Show this recipe with animation
                 card.fadeIn(300);
             }
         });
         
-        console.log("Total matches found:", matchCount);
-        
-        // Hide loading indicator after a short delay
         setTimeout(() => {
             $('#loading-indicator').addClass('d-none');
             
-            // If no results, show message
             if ($('.recipe-item:visible').length === 0) {
                 console.log("No matching recipes found, showing message");
                 if ($('#no-results-message').length === 0) {
                     $('#recipes-list').after(
                         '<div id="no-results-message" class="alert alert-info">' +
-                        'Aucune recette ne contient tous ces ingrédients.' +
+                        'Aucune recette ne correspond à vos critères.' +
                         '</div>'
                     );
                 }
@@ -557,12 +609,11 @@ $(document).ready(function() {
         }, 300);
     }
     
-    // Extract the last term from a comma-separated string
+    // Helper functions
     function extractLastTerm(term) {
         return splitTerms(term).pop();
     }
     
-    // Split terms by comma
     function splitTerms(val) {
         return val.split(/,\s*/);
     }
