@@ -8,7 +8,27 @@
     @stack('styles')
 </head>
 <body>
-  
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Sanefli Admin</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/recipes">Recettes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ingredients">Ingrédients</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="/preparations">Preparations</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="/categories">Categories</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div class="container py-4">
         @yield('content')
