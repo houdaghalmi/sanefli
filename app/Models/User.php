@@ -42,4 +42,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function hasFavorited($recetteId)
+{
+    return \App\Models\Fav::where('id_user', $this->id)
+        ->where('id_recette', $recetteId)
+        ->exists();
+}
 }

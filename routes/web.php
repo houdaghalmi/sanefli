@@ -13,8 +13,9 @@ use App\Http\Controllers\AdminPreparationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RecetteController;
 use App\Http\Controllers\FavoriteController;
-
-
+use App\Http\Controllers\UserFavoriteController;
+use App\Http\Controllers\UserRecipeController;
+use App\Http\Controllers\UserRatingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,33 +58,19 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
 
 
 
-Route::middleware(['auth', 'role:user'])->group(function () {
+Route::middleware(['auth', 'role:user'])->name('user.')->group(function () {
     Route::get('/user/dashboard', [ProfileController::class, 'index']);
+    Route::resource('/recipes', UserRecipeController::class);
+    Route::get('/recipes/search', [UserRecipeController::class, 'search'])->name('recipes.search');
+       Route::get('/autocomplete/ingredients', [UserRecipeController::class, 'autocompleteIngredients'])->name('user.recipes.autocomplete');
+    Route::resource('/favorites', UserFavoriteController::class);
+    Route::get('/favorites/check', [UserFavoriteController::class, 'check'])->name('favorites.check');
+    Route::get('/ingredients/autocomplete', [UserRecipeController::class, 'autocompleteIngredients'])->name('ingredients.autocomplete');
     
-    /*Route::resource('/recipes', [UserRecetteController::class]);
-    Route::resource('/favorites', [UserFavoriteController::class]);
-    
-    /*
-    Route::get('/user/dashboard', function () {
-        return view('user.dashboard');
-    })->name('user.dashboard');
-
-    // Page de recherche de recettes
-    Route::get('/recette/search', function () {
-        return view('user.recette');
-    })->name('recette.search');
-
-    // Page détail d'une recette
-    Route::get('/recette/detail', function () {
-        return view('user.recetteDetaille');
-    })->name('recette.detail');
-
-    // Liste des favoris
-    Route::get('/user/favorites', function () {
-        return view('user.favorites');
-    })->name('favorites.index');
-
-    */
+    // Rating routes
+    Route::post('/ratings', [UserRatingController::class, 'store'])->name('ratings.store');
+    Route::get('/ratings/user', [UserRatingController::class, 'getUserRating'])->name('ratings.user');
+    Route::get('/ratings/{recipeId}', [UserRatingController::class, 'getAverageRating'])->name('ratings.average');
 });
 
 require __DIR__.'/auth.php';
